@@ -1,0 +1,7 @@
+{
+    "host": "localhost",
+    "user": "alobunets",
+    "password": "pass",
+    "database": "usof",
+    "jwt": "key"
+}

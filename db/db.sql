@@ -1,0 +1,74 @@
+FLUSH PRIVILEGES;
+
+USE usof;
+
+CREATE TABLE IF NOT EXISTS users (
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  login VARCHAR(50) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  fullName TEXT NOT NULL,
+  email VARCHAR(150) NOT NULL UNIQUE,
+  role VARCHAR(50) NOT NULL DEFAULT 'user',
+  profPic VARCHAR(255) NOT NULL DEFAULT 'def.png',
+  rating INT NOT NULL DEFAULT '0',
+  token_sh VARCHAR(255)
+);
+
+CREATE TABLE IF NOT EXISTS categories (
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(255) NOT NULL UNIQUE,
+  description TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS posts (
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  author INT NOT NULL,
+  title TEXT NOT NULL,
+  pubDate DATETIME,
+  content TEXT NOT NULL,
+  image varchar(255) NULL,
+  status BOOLEAN NOT NULL DEFAULT true,
+  updated BOOLEAN NOT NULL DEFAULT false,
+  updated_at TIMESTAMP,
+  FOREIGN KEY (author) REFERENCES users(id)
+);
+
+CREATE TABLE IF NOT EXISTS post_category (
+  post_id INT NOT NULL,
+  category_id INT NOT NULL,
+  FOREIGN KEY (post_id) REFERENCES posts(id),
+  FOREIGN KEY (category_id) REFERENCES categories(id)
+);
+
+
+CREATE TABLE IF NOT EXISTS comments (
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  author INT NOT NULL,
+  post INT NOT NULL,
+  pubDate TIMESTAMP NOT NULL,
+  content TEXT NOT NULL,
+  edit BOOLEAN NOT NULL DEFAULT true,
+  updated BOOLEAN NOT NULL DEFAULT false,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP,
+  FOREIGN KEY (author) REFERENCES users(id),
+  FOREIGN KEY (post) REFERENCES posts(id)
+);
+
+
+CREATE TABLE IF NOT EXISTS likes (
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  post_id INT,
+  comment_id INT,
+  dislike BOOLEAN NOT NULL DEFAULT false,
+  FOREIGN KEY (user_id) REFERENCES users(id),
+  FOREIGN KEY (post_id) REFERENCES posts(id),
+  FOREIGN KEY (comment_id) REFERENCES comments(id)
+);
+
+CREATE TABLE IF NOT EXISTS tokens (
+  token VARCHAR(256) PRIMARY KEY,
+  id_own INT REFERENCES users (id),
+  date_due TIMESTAMP 
+);
